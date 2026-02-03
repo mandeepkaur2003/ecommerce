@@ -3,10 +3,28 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "./button";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useDispatch, UseDispatch,useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
+import { logout } from "@/app/redux/authSlice";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
+  const router=useRouter()
   const [open, setOpen] = useState(false);
+  const userExist=useSelector((state:RootState)=>state.auth.loggedIn)
+  const dispatch=useDispatch()
+ const handleLogout=async()=>{
+  const res=await fetch("http://localhost:3001/auth/logout",{
+    method:"Post",
+    credentials:"include"
+  })
+  const data=await res.json()
+  if(data.success){
+    dispatch(logout())
+    router.push("/")
+  }
 
+ }
   return (
     <nav className="bg-gray-50 text-gray-800 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -24,13 +42,16 @@ export default function Navbar() {
           <div className="hidden md:flex gap-7 text-black items-center">
             <Link href="/" className="font-bold">Home</Link>
             <Link href="/products" className="font-bold">Products</Link>
-            <Link href="/" className="relative flex items-center">
+            <Link href="/cart" className="relative flex items-center">
               <i className="fa-solid fa-cart-shopping text-2xl"></i>
               <span className="-top-2 -right-2 absolute w-4 h-4 rounded-full flex items-center justify-center text-white bg-pink-300">1</span>
             </Link>
-            <Button className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
+            {userExist ? <Button onClick={handleLogout} className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
+              Logout
+            </Button>:<Link href="/login"> <Button className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
               Login
-            </Button>
+            </Button></Link> }
+          
           </div>
 
           {/* Mobile Hamburger */}
@@ -49,14 +70,25 @@ export default function Navbar() {
         {open && (
           <div className="md:hidden mt-2 flex flex-col gap-4 bg-gray-50 p-4 rounded-lg shadow-lg">
             <Link href="/" className="font-bold">Home</Link>
-            <Link href="/" className="font-bold">Products</Link>
-            <Link href="/" className="relative flex items-center">
+            <Link href="/products" className="font-bold">Products</Link>
+            <Link href="/cart" className="relative flex items-center">
               <i className="fa-solid fa-cart-shopping text-2xl"></i>
               <span className="-top-2 ml-5 absolute w-5 h-5 rounded-full flex items-center justify-center text-white bg-pink-300">1</span>
             </Link>
-            <Button className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
-              Login
-            </Button>
+         {userExist ? (
+  <Button
+    onClick={handleLogout}
+    className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800"
+  >
+    Logout
+  </Button>
+) : (
+  <Link href="/login">
+    <Button className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
+      Login
+    </Button>
+  </Link>
+)}
           </div>
         )}
       </div>
