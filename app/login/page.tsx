@@ -9,10 +9,12 @@ import { useRouter } from "next/navigation";
 import { login } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 
+import { getCart } from "../redux/cart/cartSlice";
+import { AppDispatch } from "@/app/redux/store";
 
 
 export default function Login() {
-    const dispatch=useDispatch()
+    const dispatch=useDispatch<AppDispatch>()
   const [eye, setEye] = useState(false);
   const router=useRouter()
   const initialState = {
@@ -53,6 +55,7 @@ export default function Login() {
               const data = await res.json();
               if (data.success) {toast.success(data.msg); router.push("/products")
                 dispatch(login({email:data.email}))
+                dispatch(getCart())
                 return
               }
               else {toast.error(data.msg)
