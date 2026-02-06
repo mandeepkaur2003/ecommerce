@@ -10,8 +10,9 @@ import { MailService } from './mail/mail.service';
 import { MailController } from './mail/mail.controller';
 import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
+import { ProductModule } from './product/product.module';
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }),AuthModule, UserModule,MongooseModule.forRoot("mongodb://127.0.0.1:27017/ecommerce"), CartModule, OtpModule, MailModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }),AuthModule, UserModule,MongooseModule.forRoot("mongodb://127.0.0.1:27017/ecommerce"), CartModule, OtpModule, MailModule, ProductModule],
   controllers: [AppController, MailController],
   providers: [AppService, MailService],
 })
