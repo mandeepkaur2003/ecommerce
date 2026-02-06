@@ -3,15 +3,18 @@ import { useState } from "react";
 import Link from "next/link";
 import { Button } from "./button";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
-import { useDispatch, UseDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
 import { logout } from "@/app/redux/authSlice";
 import { useRouter } from "next/navigation";
+
 
 export default function Navbar() {
   const router=useRouter()
   const [open, setOpen] = useState(false);
   const userExist=useSelector((state:RootState)=>state.auth.loggedIn)
+  const {items}=useSelector((state:RootState)=>state.cart)
+  // const cartLength=items.length
   const dispatch=useDispatch()
  const handleLogout=async()=>{
   const res=await fetch("http://localhost:3001/auth/logout",{
@@ -44,7 +47,7 @@ export default function Navbar() {
             <Link href="/products" className="font-bold">Products</Link>
             <Link href="/cart" className="relative flex items-center">
               <i className="fa-solid fa-cart-shopping text-2xl"></i>
-              <span className="-top-2 -right-2 absolute w-4 h-4 rounded-full flex items-center justify-center text-white bg-pink-300">1</span>
+              <span className="-top-2 -right-2 absolute w-4 h-4 rounded-full flex items-center justify-center text-white bg-pink-300">{items?.length??0}</span>
             </Link>
             {userExist ? <Button onClick={handleLogout} className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
               Logout

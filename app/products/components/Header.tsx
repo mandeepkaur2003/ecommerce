@@ -112,7 +112,7 @@ export default function Header() {
       <div className="flex animate-marquee gap-6">
         
         {products.concat(products).map((src, index) => (
-          <div key={index} className="shrink-0 w-25 h-25 relative">
+          <div key={index} className="shrink-0 w-15 h-15 relative">
             <Image
               src={src}
               alt={`Product ${index + 1}`}
