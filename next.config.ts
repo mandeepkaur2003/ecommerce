@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['cdn.dummyjson.com'], // ✅ add your image host here
+    domains: ['cdn.dummyjson.com', 'cdn-icons-png.flaticon.com','localhost'], // add your image host here
   },
 };
 

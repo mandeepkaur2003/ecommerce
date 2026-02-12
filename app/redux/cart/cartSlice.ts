@@ -1,7 +1,6 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 
 
-
 interface Item{
     productId:string
     title:string
@@ -86,6 +85,20 @@ export const getCart=createAsyncThunk(
         return data.items
     }
 )
+//del all cart
+export const delAllCart=createAsyncThunk(
+    "cart/delAllCart",
+    async()=>{
+            const res=await fetch("http://localhost:3001/cart/del-allcart",{
+            method:"Delete",
+            headers:{'Content-Type':"application/json"},
+            
+            credentials:"include"
+        })
+        const data=await res.json()
+        return data
+    }
+)
 
 
 const cartSlice=createSlice({
@@ -94,6 +107,8 @@ const cartSlice=createSlice({
     reducers:{
         addToCart(state,action){
             const item=action.payload
+                if (!state.items) state.items = [];
+
             const existingProduct=state.items.find((i)=>i.productId==item.productId)
             if(existingProduct){
                 existingProduct.quantity+=item.quantity
@@ -128,6 +143,12 @@ const cartSlice=createSlice({
         }
 
      )
+      .addCase(delAllCart.fulfilled, (state, action) => {
+      state.items = []  
+    })
+    .addCase(RemoveProduct.fulfilled, (state, action) => {
+      state.items = state.items.filter(i => i.productId !== action.payload.id)
+    })
     }
 })
 export const {addToCart,incrementQty,decrementQty,removeFromCart}=cartSlice.actions

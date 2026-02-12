@@ -1,27 +1,63 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-interface AuthSlice{
-    loggedIn:boolean,
-    userEmail:string|null
-}
-const initialState:AuthSlice={
-    loggedIn:false,
-    userEmail:null
-}
-export const authSlice=createSlice({
-    name:"auth",
-    initialState,
-    reducers:{
-        login:(state,action:PayloadAction<{email:string}>)=>{
-            state.loggedIn=true,
-            state.userEmail=action.payload.email
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-        },
-        logout:(state)=>{
-            state.loggedIn=false,
-            state.userEmail=null
-        }
+export const checkAuth = createAsyncThunk(
+  "auth/checkAuth",
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await fetch("http://localhost:3001/auth/me", {
+        method: "GET",
+        credentials: "include",
+      });
 
+      if (!res.ok) {
+        return rejectWithValue("Not authenticated");
+      }
+
+      return await res.json();
+    } catch (err) {
+      return rejectWithValue("Network error");
     }
-})
-export const {login,logout}=authSlice.actions
-export default authSlice.reducer
+  }
+);
+
+interface AuthState {
+  loggedIn: boolean;
+  userEmail: string | null;
+  loading: boolean;
+}
+
+const initialState: AuthState = {
+  loggedIn: false,
+  userEmail: null,
+  loading: true, 
+};
+
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {
+    logout: (state) => {
+      state.loggedIn = false;
+      state.userEmail = null;
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(checkAuth.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(checkAuth.fulfilled, (state, action) => {
+        state.loading = false;
+        state.loggedIn = true;
+        state.userEmail = action.payload?.user?.email ?? null;
+      })
+      .addCase(checkAuth.rejected, (state) => {
+        state.loading = false;
+        state.loggedIn = false;
+        state.userEmail = null;
+      });
+  },
+});
+
+export const { logout } = authSlice.actions;
+export default authSlice.reducer;

@@ -4,6 +4,7 @@ export function middleware(req:NextRequest){
     const {pathname}=req.nextUrl
     const protectedRoute=[
         "/cart",
+        "/profile"
         
     ]
     const authRoute=[
@@ -24,6 +25,6 @@ export function middleware(req:NextRequest){
   }
  return NextResponse.next()}
  export const config={
-    matcher:["/cart/:path*","/login","/signup"]
+    matcher:["/cart/:path*","/login","/signup","/profile"]
  }
    

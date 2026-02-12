@@ -5,6 +5,7 @@ import Navbar from "@/components/ui/Navbar";
 import { ToastContainer } from "react-toastify";
 import AppWrapper from "./AppWrapper";
 import ReduxProvider from "./redux/ReduxProvider";
+import { AuthWrapper } from "./AuthWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +34,7 @@ export default function RootLayout({
       >
         <ReduxProvider>
           <AppWrapper>
+            <AuthWrapper>
             <Navbar />
             {children}
             <ToastContainer
@@ -47,6 +49,7 @@ export default function RootLayout({
               pauseOnHover
               theme="colored"
             />
+            </AuthWrapper>
           </AppWrapper>
         </ReduxProvider>
       </body>

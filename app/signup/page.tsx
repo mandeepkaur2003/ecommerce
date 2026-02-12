@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useState } from "react";
-import { login } from "../redux/authSlice";
+// import { login } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
+import { checkAuth } from "../redux/authSlice";
+import { AppDispatch } from "@/app/redux/store";
 
 export default function Signup() {
-    const dispatch=useDispatch()
+    const dispatch=useDispatch<AppDispatch>()
     const router=useRouter()
     const [eye,setEye]=useState(false)
   const initialState = {
@@ -59,8 +61,10 @@ export default function Signup() {
 
               const data = await res.json();
 
-                if (data.success) {toast.success(data.msg); router.push("/products")
-                    dispatch(login({email:data.email}))
+                if (data.success) {toast.success(data.msg); 
+                  await dispatch(checkAuth())
+                  router.push("/products")
+                    // dispatch(login({email:data.email}))
                   return
                 } else {
                 toast.error(data.msg);

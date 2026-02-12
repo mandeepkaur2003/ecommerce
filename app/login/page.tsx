@@ -6,11 +6,12 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { login } from "../redux/authSlice";
+// import { login } from "../redux/authSlice";
 import { useDispatch } from "react-redux";
 
 import { getCart } from "../redux/cart/cartSlice";
 import { AppDispatch } from "@/app/redux/store";
+import { checkAuth } from "../redux/authSlice";
 
 
 export default function Login() {
@@ -54,7 +55,8 @@ export default function Login() {
 
               const data = await res.json();
               if (data.success) {toast.success(data.msg); router.push("/products")
-                dispatch(login({email:data.email}))
+                // dispatch(login({email:data.email}))
+              await dispatch(checkAuth())
                 dispatch(getCart())
                 return
               }

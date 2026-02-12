@@ -5,29 +5,30 @@ import { Button } from "./button";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/app/redux/store";
-import { logout } from "@/app/redux/authSlice";
+// import { logout } from "@/app/redux/authSlice";
 import { useRouter } from "next/navigation";
 
+import ProfileMenu from "./ProfileMenu";
 
 export default function Navbar() {
   const router=useRouter()
   const [open, setOpen] = useState(false);
-  const userExist=useSelector((state:RootState)=>state.auth.loggedIn)
+  const {loading,loggedIn}=useSelector((state:RootState)=>state.auth)
   const {items}=useSelector((state:RootState)=>state.cart)
   // const cartLength=items.length
   const dispatch=useDispatch()
- const handleLogout=async()=>{
-  const res=await fetch("http://localhost:3001/auth/logout",{
-    method:"Post",
-    credentials:"include"
-  })
-  const data=await res.json()
-  if(data.success){
-    dispatch(logout())
-    router.push("/")
-  }
+//  const handleLogout=async()=>{
+//   const res=await fetch("http://localhost:3001/auth/logout",{
+//     method:"Post",
+//     credentials:"include"
+//   })
+//   const data=await res.json()
+//   if(data.success){
+//     dispatch(logout())
+//     router.push("/")
+//   }
 
- }
+//  }
   return (
     <nav className="bg-gray-50 text-gray-800 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,9 +50,7 @@ export default function Navbar() {
               <i className="fa-solid fa-cart-shopping text-2xl"></i>
               <span className="-top-2 -right-2 absolute w-4 h-4 rounded-full flex items-center justify-center text-white bg-pink-300">{items?.length??0}</span>
             </Link>
-            {userExist ? <Button onClick={handleLogout} className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
-              Logout
-            </Button>:<Link href="/login"> <Button className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
+            {loading ?null :loggedIn?(   <ProfileMenu />):<Link href="/login"> <Button className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
               Login
             </Button></Link> }
           
@@ -78,13 +77,8 @@ export default function Navbar() {
               <i className="fa-solid fa-cart-shopping text-2xl"></i>
               <span className="-top-2 ml-5 absolute w-5 h-5 rounded-full flex items-center justify-center text-white bg-pink-300">1</span>
             </Link>
-         {userExist ? (
-  <Button
-    onClick={handleLogout}
-    className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800"
-  >
-    Logout
-  </Button>
+         {loading ? null :loggedIn? (
+             <ProfileMenu />
 ) : (
   <Link href="/login">
     <Button className="bg-linear-to-r from-pink-500 to-purple-700 text-white hover:from-pink-600 hover:to-purple-800">
